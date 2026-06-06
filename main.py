@@ -2,8 +2,23 @@ import discord
 from discord.ext import commands
 import requests
 import os
+from flask import Flask
+from threading import Thread
 
-# Token ab GitHub par nahi, hum Render website par daalenge
+# --- RENDER KO KHUSH RAKHNE KE LIYE FAKE WEBSITE ---
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+# ----------------------------------------------------
+
 TOKEN = os.environ.get("TOKEN")
 
 intents = discord.Intents.default()
@@ -29,8 +44,12 @@ async def guild(ctx, uid: str):
     except:
         await ctx.send("⚠️ API Server down hai, baad mein try karein.")
 
+# Fake website ko chalu karo
+keep_alive()
+
+# Bot ko chalu karo
 if TOKEN:
     bot.run(TOKEN)
 else:
     print("Token nahi mila! Render par token check karein.")
-  
+    
